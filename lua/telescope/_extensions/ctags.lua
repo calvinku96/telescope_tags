@@ -26,11 +26,20 @@ local function tags(opts)
             })
         return
     end
+    opts.bufnr = opts.bufnr or vim.api.nvim_get_current_buf()
+    opts.winnr = opts.winnr or vim.api.nvim_get_current_win()
     opts.entry_maker = vim.F.if_nil(opts.entry_maker, make_entry.gen_from_ctags(opts))
+
+    cat = "cat"
+    if vim.fn.has "win32" then
+        thisfile = debug.getinfo(1).source:sub(2)
+        file_path_len = string.len(thisfile)
+        cat = string.sub(thisfile, 1, file_path_len - 35) .. "win_cat.bat"
+    end
 
     pickers.new(opts, {
         prompt_title = "Tags",
-        finder = finders.new_oneshot_job(flatten { "C:\\bin\\cat.bat", tagfiles }, opts),
+        finder = finders.new_oneshot_job(flatten { cat, tagfiles }, opts),
         previewer = previewers.ctags.new(opts),
         sorter = conf.generic_sorter(opts),
         attach_mappings = function()
