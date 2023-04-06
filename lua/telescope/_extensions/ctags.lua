@@ -39,7 +39,7 @@ local function tags(opts)
 
     pickers.new(opts, {
         prompt_title = "Tags",
-        finder = finders.new_oneshot_job(flatten { cat, tagfiles }, opts),
+        finder = finders.new_oneshot_job(vim.tbl_flatten { cat, tagfiles }, opts),
         previewer = previewers.ctags.new(opts),
         sorter = conf.generic_sorter(opts),
         attach_mappings = function()
