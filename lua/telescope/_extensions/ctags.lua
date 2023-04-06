@@ -13,6 +13,7 @@ local entry_display = require('telescope.pickers.entry_display')
 local utils = require('telescope.utils')
 local make_entry = require "telescope.make_entry"
 local previewers = require "telescope.previewers"
+local is_windows = vim.loop.os_uname().sysname == "Windows_NT"
 
 local function tags(opts) 
     local tagfiles = opts.ctags_file and { opts.ctags_file } or vim.fn.tagfiles()
@@ -31,7 +32,7 @@ local function tags(opts)
     opts.entry_maker = vim.F.if_nil(opts.entry_maker, make_entry.gen_from_ctags(opts))
 
     cat = "cat"
-    if vim.fn.has "win32" then
+    if is_windows then
         thisfile = debug.getinfo(1).source:sub(2)
         file_path_len = string.len(thisfile)
         cat = string.sub(thisfile, 1, file_path_len - 35) .. "win_cat.bat"
